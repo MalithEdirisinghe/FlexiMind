@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, Image, Text, TextInput, TouchableOpacity } from 'react-native';
 
-const RegisterScreen = () => {
+const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [showPassword1, setShowPassword1] = useState(false);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
-
+    const togglePasswordVisibility1 = () => {
+        setShowPassword1(!showPassword1);
+    };
     const handleLogin = () => {
 
     }
     const handleCreate = () => {
-
+        navigation.navigate('Login');
     }
 
     return (
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
             <View style={styles.container}>
-                <Text style={styles.textTopic}>Login</Text>
+                <Text style={styles.textTopic}>Register</Text>
                 <Image style={styles.bgImg} source={require('../assets/bg.jpg')}></Image>
                 <View style={styles.overlay}></View>
                 <Text style={styles.textWelcome}>Welcome back to FlexiMind</Text>
@@ -43,20 +47,43 @@ const RegisterScreen = () => {
                     {showPassword ? (
                         <Image
                             source={require('../assets/eye.png')}
-                            style={{ width: 24, height: 24 }}
+                            style={{ width: 25, height: 25 }}
                         />
                     ) : (
                         <Image
                             source={require('../assets/eyeClose.png')}
-                            style={{ width: 24, height: 24 }}
+                            style={{ width: 25, height: 25 }}
                         />
                     )}
                 </TouchableOpacity>
+                
+                <Text style={styles.textEmail}>Confirm Password:</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Confirm Password"
+                    secureTextEntry={!showPassword1}
+                    value={confirmPassword}
+                    onChangeText={text => setConfirmPassword(text)}
+                />
+                <TouchableOpacity style={styles.eyeIcon1} onPress={togglePasswordVisibility1}>
+                    {showPassword1 ? (
+                        <Image
+                            source={require('../assets/eye.png')}
+                            style={{ width: 25, height: 25 }}
+                        />
+                    ) : (
+                        <Image
+                            source={require('../assets/eyeClose.png')}
+                            style={{ width: 25, height: 25 }}
+                        />
+                    )}
+                </TouchableOpacity>
+
                 <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
-                    <Text style={styles.loginTxt}>Login</Text>
+                    <Text style={styles.loginTxt}>Register</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.createAcc} onPress={handleCreate}>
-                    <Text style={styles.createTxt}>Create an account?</Text>
+                    <Text style={styles.createTxt}>Already have an account?</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>
@@ -120,6 +147,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: '15%',
         bottom: '40%'
+    },
+    eyeIcon1: {
+        position: 'absolute',
+        right: '15%',
+        bottom: '28%'
     },
     eyeIconText: {
         fontSize: 20,

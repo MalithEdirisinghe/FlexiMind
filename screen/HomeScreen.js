@@ -1,14 +1,49 @@
 import React from 'react';
 import { View, StyleSheet, Image, Text } from 'react-native';
 
-const DashboardHome = () => {
+const DashboardHome = ({navigation}) => {
+
+    const handleDyslexia = () => {
+        navigation.navigate('Register');
+    }
+
+    const handleLearn = () => {
+        navigation.navigate('Login');
+    }
+
     return (
         <View style={styles.container}>
         <Text style={styles.textTopic}>FlexiMind</Text>
             <Image style={styles.bgImg} source={require('../assets/bg.jpg')}></Image>
             <View style={styles.overlay}></View>
             <Image style={styles.dashImg} source={require('../assets/dashboard.png')}></Image>
-            {/* <Image style={styles.textImg} source={require('../assets/FlexiMind.png')}></Image> */}
+             <View style={styles.rectangle1}>
+             <View style={styles.orangeCircle1}>
+                <View style={styles.whiteCircle1}></View>
+             </View>
+                <Text style={styles.dyslexia} onPress={handleDyslexia}>Dyslexia Assessment</Text>
+             </View>
+
+            <View style={styles.rectangle2}>
+                <View style={styles.orangeCircle2}>
+                    <View style={styles.whiteCircle2}></View>
+                </View>
+                <Text style={styles.learn} onPress={handleLearn}>Learn Tamil Letters</Text>
+            </View>
+
+            <View style={styles.rectangle3}>
+                <View style={styles.orangeCircle3}>
+                    <View style={styles.whiteCircle3}></View>
+                </View>
+                <Text style={styles.eduTrack} onPress={handleLearn}>EduTrack and{'\n'} MathHands</Text>
+            </View>
+
+            <View style={styles.rectangle4}>
+                <View style={styles.orangeCircle4}>
+                    <View style={styles.whiteCircle4}></View>
+                </View>
+                <Text style={styles.remedial} onPress={handleLearn}>Remedial Teaching{'\n'} through Games</Text>
+            </View>
         </View>
     );
 };
@@ -30,7 +65,7 @@ const styles = StyleSheet.create({
     },
     dashImg: {
         alignSelf: 'center',
-        top: '-65%',
+        top: '-73%',
         width: '40%',
         height: '25%',
     },
@@ -45,7 +80,143 @@ const styles = StyleSheet.create({
         fontWeight: '900',
         fontSize: 35,
         color: '#FFD166',
-        top: '12%'
+        top: '8%'
+    },
+    rectangle1: {
+        position: 'absolute',
+        width: 320,
+        height: 49,
+        left: 28,
+        top: '40%',
+        backgroundColor: '#4D86F7',
+        borderRadius: 20,
+    },
+    dyslexia: {
+        left: 70,
+        fontWeight: '900',
+        fontSize: 25,
+        color: '#FFD166',
+        top: 5
+    },
+    orangeCircle1: {
+        position: 'absolute',
+        width: 69,
+        height: 66,
+        left: -5,
+        bottom: '-15%',
+        backgroundColor: '#FFD166',
+        borderRadius: 34,
+    },
+    whiteCircle1: {
+        position: 'absolute',
+        width: 47,
+        height: 49,
+        left: 11,
+        bottom: '12%',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 9999,
+    }, 
+    rectangle2: {
+        position: 'absolute',
+        width: 320,
+        height: 49,
+        left: 28,
+        top: '50%',
+        backgroundColor: '#4D86F7',
+        borderRadius: 20,
+    },
+    learn: {
+        left: 30,
+        fontWeight: '900',
+        fontSize: 25,
+        color: '#FFD166',
+        top: 5
+    },
+    orangeCircle2: {
+        position: 'absolute',
+        width: 69,
+        height: 66,
+        left: 260,
+        bottom: '-15%',
+        backgroundColor: '#FFD166',
+        borderRadius: 34,
+    },
+    whiteCircle2: {
+        position: 'absolute',
+        width: 47,
+        height: 49,
+        left: 11,
+        bottom: '12%',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 9999,
+    },
+    rectangle3: {
+        position: 'absolute',
+        width: 320,
+        height: 79,
+        left: 28,
+        top: '60%',
+        backgroundColor: '#4D86F7',
+        borderRadius: 20,
+    },
+    eduTrack: {
+        left: 100,
+        fontWeight: '900',
+        fontSize: 25,
+        color: '#FFD166',
+        top: 5
+    },
+    orangeCircle3: {
+        position: 'absolute',
+        width: 99,
+        height: 96,
+        left: -10,
+        bottom: '-10%',
+        backgroundColor: '#FFD166',
+        borderRadius: 54,
+    },
+    whiteCircle3: {
+        position: 'absolute',
+        width: 77,
+        height: 79,
+        left: 11,
+        bottom: '8%',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 9999,
+    },
+    rectangle4: {
+        position: 'absolute',
+        width: 320,
+        height: 79,
+        left: 28,
+        top: '75%',
+        backgroundColor: '#4D86F7',
+        borderRadius: 20,
+    },
+    remedial: {
+        left: 30,
+        fontWeight: '900',
+        fontSize: 25,
+        color: '#FFD166',
+        top: 5
+    },
+    orangeCircle4: {
+        position: 'absolute',
+        width: 99,
+        height: 96,
+        left: 250,
+        bottom: '-10%',
+        backgroundColor: '#FFD166',
+        borderRadius: 54,
+    },
+    whiteCircle4: {
+        position: 'absolute',
+        width: 77,
+        height: 79,
+        left: 11,
+        bottom: '8%',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 9999,
     },
     overlay: {
         ...StyleSheet.absoluteFillObject,

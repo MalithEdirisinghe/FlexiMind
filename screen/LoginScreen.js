@@ -11,7 +11,7 @@ const LoginScreen = ({ navigation }) => {
     };
 
     const handleLogin = () => {
-        
+        navigation.navigate('Home');
     }
     const handleCreate = () => {
         navigation.navigate('Register');

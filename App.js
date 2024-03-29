@@ -17,7 +17,7 @@ const App = () => {
           component={LoginScreen}
           options={() => ({
             headerShown: false,
-            headerLeft: null, // Remove the back button
+            headerLeft: null,
           })}
         />
 
@@ -26,7 +26,7 @@ const App = () => {
           component={RegisterScreen}
           options={() => ({
             headerShown: false,
-            headerLeft: null, // Remove the back button
+            headerLeft: null,
           })}
         />
 
@@ -35,7 +35,7 @@ const App = () => {
           component={HomeScreen}
           options={() => ({
             headerShown: false,
-            headerLeft: null, // Remove the back button
+            headerLeft: null,
           })}
         />
         
