@@ -8,7 +8,7 @@ const DashboardHome = ({navigation}) => {
     }
 
     const handleLearn = () => {
-        navigation.navigate('Login');
+        navigation.navigate('Learn');
     }
 
     return (
