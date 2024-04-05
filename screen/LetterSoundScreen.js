@@ -8,11 +8,11 @@ const LetterSoundScreen = ({ navigation }) => {
     }
 
     const handleVowel = () => {
-        navigation.navigate('Vowel');
+        navigation.navigate('Vowel', { category: 'vowel' });
     }
 
     const handleConsonant = () => {
-        navigation.navigate('Home');
+        navigation.navigate('Vowel', { category: 'consonant' });
     }
 
     return (
