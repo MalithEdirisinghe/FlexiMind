@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, Image, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, ScrollView, StyleSheet, Image, Text, TextInput, TouchableOpacity, ToastAndroid, ActivityIndicator } from 'react-native';
+import { auth } from './firebase';
+import { createUserWithEmailAndPassword, AuthErrorCodes } from 'firebase/auth';
 
 const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -7,6 +9,8 @@ const RegisterScreen = ({ navigation }) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showPassword1, setShowPassword1] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -14,8 +18,63 @@ const RegisterScreen = ({ navigation }) => {
     const togglePasswordVisibility1 = () => {
         setShowPassword1(!showPassword1);
     };
-    const handleLogin = () => {
+    const handleRegister = async () => {
+        if (!email || !password || !confirmPassword) {
+            const value = 'Please fill in all fields.';
+            ToastAndroid.showWithGravityAndOffset(
+                value,
+                ToastAndroid.SHORT,
+                ToastAndroid.BOTTOM,
+                25,
+                50
+            );
+        } else if (password !== confirmPassword) {
+            const value = 'Passwords do not match.';
+            ToastAndroid.showWithGravityAndOffset(
+                value,
+                ToastAndroid.SHORT,
+                ToastAndroid.BOTTOM,
+                25,
+                50
+            );
+        } else {
+            setIsLoading(true);
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
 
+                console.log('User registered successfully:', user.email);
+                console.log('Signup Successful!');
+
+
+                const value = 'Signup Successful!';
+                ToastAndroid.showWithGravityAndOffset(
+                    value,
+                    ToastAndroid.SHORT,
+                    ToastAndroid.BOTTOM,
+                    25,
+                    50
+                );
+                navigation.navigate('Login');
+
+            } catch (error) {
+                setIsLoading(false); // Hide loading indicator on error
+                if (error.code === AuthErrorCodes.EMAIL_EXISTS) {
+                    const value = 'Email is already in use. Please use a different email.';
+                    ToastAndroid.showWithGravityAndOffset(
+                        value,
+                        ToastAndroid.SHORT,
+                        ToastAndroid.BOTTOM,
+                        25,
+                        50
+                    );
+                } else {
+                    console.log(error);
+                    setErrorMessage('An error occurred during signup. Please try again later.');
+                }
+            }
+            setIsLoading(false);
+        }
     }
     const handleCreate = () => {
         navigation.navigate('Login');
@@ -79,12 +138,18 @@ const RegisterScreen = ({ navigation }) => {
                     )}
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
-                    <Text style={styles.loginTxt}>Register</Text>
+                <TouchableOpacity style={styles.loginBtn} onPress={handleRegister}>
+                    {isLoading ? (
+                        <ActivityIndicator size="small" color="#ffffff" />
+                    ) : (
+                            <Text style={styles.loginTxt}>Register</Text>
+                    )}
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.createAcc} onPress={handleCreate}>
                     <Text style={styles.createTxt}>Already have an account?</Text>
                 </TouchableOpacity>
+                {<Text style={styles.errorMessage}>{errorMessage}</Text>}
+                {isLoading && <ActivityIndicator size="large" color="#FF3939" />} 
             </View>
         </ScrollView>
     );
@@ -184,6 +249,10 @@ const styles = StyleSheet.create({
         height: 37.5,
         textAlign: 'center',
         fontWeight: '800'
+    },
+    errorMessage: {
+        color: 'red',
+        marginTop: 20,
     },
     overlay: {
         ...StyleSheet.absoluteFillObject,

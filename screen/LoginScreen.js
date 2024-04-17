@@ -1,17 +1,104 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, Image, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, ScrollView, StyleSheet, Image, Text, TextInput, TouchableOpacity, ToastAndroid, ActivityIndicator } from 'react-native';
+import { sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from './firebase';
+import * as SecureStore from 'expo-secure-store';
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
+    useEffect(() => {
+        const tryAutoLogin = async () => {
+            try {
+                const storedEmail = await SecureStore.getItemAsync('email');
+                const storedPassword = await SecureStore.getItemAsync('password');
+
+                if (storedEmail && storedPassword) {
+                    setEmail(storedEmail);
+                    setPassword(storedPassword);
+                    handleLogin();
+                }
+            } catch (error) {
+                console.error('Error reading stored credentials:', error);
+            }
+        };
+
+        tryAutoLogin();
+    }, []);
+
+    const saveCredentials = async (email, password) => {
+        try {
+            await SecureStore.setItemAsync('email', email);
+            await SecureStore.setItemAsync('password', password);
+        } catch (error) {
+            console.error('Error saving credentials:', error);
+        }
+    };
+
     const handleLogin = () => {
-        navigation.navigate('Home');
+        if (email.length === 0 || password.length === 0) {
+            console.log('Please enter Email and Password');
+            const value = "Please enter Email and Password";
+            ToastAndroid.showWithGravityAndOffset(
+                value,
+                ToastAndroid.SHORT,
+                ToastAndroid.BOTTOM,
+                25,
+                50
+            );
+        } else {
+            setLoading(true);
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    // User logged in successfully
+                    console.log('Login Successful!');
+                    const value = "Login Successful!";
+                    ToastAndroid.showWithGravityAndOffset(
+                        value,
+                        ToastAndroid.SHORT,
+                        ToastAndroid.BOTTOM,
+                        25,
+                        50
+                    );
+                    saveCredentials(email, password);
+
+
+                    navigation.navigate('Home'); 
+                })
+                .catch(error => {
+                    // Handle login errors (e.g., incorrect email or password)
+                    if (error.code === 'auth/invalid-credential') {
+                        const value = "Incorrect Email or Password";
+                        ToastAndroid.showWithGravityAndOffset(
+                            value,
+                            ToastAndroid.LONG,
+                            ToastAndroid.BOTTOM,
+                            25,
+                            50
+                        );
+                    }
+                    if (error.code === 'auth/too-many-requests') {
+                        const value = "Login disabled due to many attempts. Reset password or retry later.";
+                        ToastAndroid.showWithGravityAndOffset(
+                            value,
+                            ToastAndroid.LONG,
+                            ToastAndroid.BOTTOM,
+                            50,
+                            50
+                        );
+                    }
+                })
+                .finally(() => {
+                    setLoading(false); 
+                });
+        }
     }
     const handleCreate = () => {
         navigation.navigate('Register');
@@ -52,8 +139,12 @@ const LoginScreen = ({ navigation }) => {
                         />
                     )}
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
-                    <Text style={styles.loginTxt}>Login</Text>
+                <TouchableOpacity style={styles.loginBtn} onPress={handleLogin} disabled={loading}>
+                    {loading ? (
+                        <ActivityIndicator size="small" color="#ffffff" />
+                    ) : (
+                        <Text style={styles.loginTxt}>Login</Text>
+                    )}
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.createAcc} onPress={handleCreate}>
                     <Text style={styles.createTxt}>Create an account?</Text>

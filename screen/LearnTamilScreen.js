@@ -10,6 +10,14 @@ const LearnTamilScreen = ({navigation}) => {
     const handleSound = () => {
         navigation.navigate('Sound1');
     }
+
+    const handleGame = () => {
+        navigation.navigate('Game');
+    }
+
+    const handleWrite = () => {
+        
+    }
     return (
         <View style={styles.container}>
             <Text style={styles.textTopic}>LET’S LEARN{'\n'} TAMIL LETTERS</Text>
@@ -18,7 +26,7 @@ const LearnTamilScreen = ({navigation}) => {
             <Image style={styles.dashImg} source={require('../assets/learn.png')}></Image>
 
             <View style={styles.rectangle1}>
-                <TouchableOpacity onPress={handleSound}>
+                <TouchableOpacity onPress={handleWrite}>
                 <Image style={styles.writeImg} source={require('../assets/write-tamil.png')}/>
                 <Text style={styles.text1}>Tamil Letter{'\n'} Writing</Text>
                 </TouchableOpacity>
@@ -32,7 +40,7 @@ const LearnTamilScreen = ({navigation}) => {
             </View>
 
             <View style={styles.rectangle3}>
-            <TouchableOpacity onPress={handleSound}>
+                <TouchableOpacity onPress={handleGame}>
                 <Image style={styles.listenImg} source={require('../assets/game.png')} />
                 <Text style={styles.text1}>Tamil Letter{'\n'} Games</Text>
                 </TouchableOpacity>

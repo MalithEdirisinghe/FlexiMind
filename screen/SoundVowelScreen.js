@@ -168,7 +168,7 @@ const SoundVowelScreen = ({ route }) => {
                                 <Image style={styles.soundIcon} source={require('../assets/sound.png')}></Image>
                             </TouchableOpacity>
                         </View>
-
+ 
                         <View style={styles.card2}>
                             <Text style={styles.card1Text}>ந்</Text>
                             <TouchableOpacity onPress={() => handleSpeak1(require('../assets/Tamil-Consonant-Letter-Sounds/ndh - ந்.mp3'))}>
