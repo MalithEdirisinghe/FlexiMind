@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Image, Text } from 'react-native';
 
-const DashboardHome = ({ route }) => {
+const DashboardHome = ({ route, navigation }) => {
     const { language } = route.params;
-    const [selectedLanguage, setSelectedLanguage] = useState(language);
+    const [selectedLanguage] = useState(language);
     const styles = selectedLanguage === 'English' ? englishStyles : tamilStyles;
 
     const handleDyslexia = () => {
