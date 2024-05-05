@@ -16,7 +16,7 @@ const LearnTamilScreen = ({navigation}) => {
     }
 
     const handleWrite = () => {
-        
+        navigation.navigate('Writing');
     }
     return (
         <View style={styles.container}>

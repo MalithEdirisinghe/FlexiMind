@@ -8,6 +8,8 @@ import RegisterScreen from './screen/RegisterScreen';
 import LearnTamilScreen from './screen/LearnTamilScreen';
 import SoundVowelScreen from './screen/SoundVowelScreen';
 import GameScreen from './screen/GameScreen';
+import LetterWritingScreen from './screen/LetterWritingScreen';
+import WriteLetterScreen from './screen/WriteLetterScreen';
 
 const Stack = createStackNavigator();
 
@@ -39,6 +41,16 @@ const App = () => {
           name="Sound1"
           component={LetterSoundScreen}
           options={{ title: '', headerTintColor: '#FFD166', headerStyle: { backgroundColor: '#4D86F7' } }}
+        />
+        <Stack.Screen
+          name="Writing"
+          component={LetterWritingScreen}
+          options={{ title: '', headerTintColor: '#FFD166', headerStyle: { backgroundColor: '#4D86F7' } }}
+        />
+        <Stack.Screen
+          name="WritingLetter"
+          component={WriteLetterScreen}
+          options={{ title: 'Write Letter', headerTitleAlign: 'center', headerTintColor: '#FFD166', headerStyle: { backgroundColor: '#4D86F7' } }}
         />
         <Stack.Screen
           name="Vowel"

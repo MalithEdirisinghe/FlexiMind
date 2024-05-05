@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, Image, Text, TextInput, TouchableOpacity, ToastAndroid, ActivityIndicator } from 'react-native';
+import { View, ScrollView, StyleSheet, Image, Text, TextInput, TouchableOpacity, ToastAndroid, ActivityIndicator, Alert } from 'react-native';
 import { sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebase';
 import * as SecureStore from 'expo-secure-store';
@@ -68,10 +68,9 @@ const LoginScreen = ({ navigation }) => {
                         50
                     );
                     saveCredentials(email, password);
-
-
-                    navigation.navigate('Home'); 
+                    showLanguageSelection();
                 })
+
                 .catch(error => {
                     // Handle login errors (e.g., incorrect email or password)
                     if (error.code === 'auth/invalid-credential') {
@@ -96,10 +95,35 @@ const LoginScreen = ({ navigation }) => {
                     }
                 })
                 .finally(() => {
-                    setLoading(false); 
+                    setLoading(false);
                 });
         }
     }
+
+    const showLanguageSelection = () => {
+        Alert.alert(
+            'Select Language',
+            'Choose your preferred language:',
+            [
+                {
+                    text: 'English',
+                    onPress: () => navigateToHome('English')
+                },
+                {
+                    text: 'Tamil',
+                    onPress: () => navigateToHome('Tamil')
+                }
+            ]
+        );
+    };
+
+    const navigateToHome = (language) => {
+        console.log(`${language} selected`);
+        navigation.navigate('Home', { language: language });
+    };
+
+
+
     const handleCreate = () => {
         navigation.navigate('Register');
     }
@@ -157,7 +181,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     scrollViewContent: {
         flexGrow: 1,
-        
+
     },
     container: {
         position: 'relative',
@@ -218,7 +242,7 @@ const styles = StyleSheet.create({
     loginBtn: {
         alignSelf: 'center',
         bottom: '55%',
-        backgroundColor:'#4D86F7',
+        backgroundColor: '#4D86F7',
         width: '30%',
         height: '5%',
         padding: 10,
@@ -254,3 +278,4 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
+ 
