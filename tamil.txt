@@ -1,0 +1,55 @@
+Dashboard
+
+Dyslexia Assessment : டிஸ்லெக்ஸியா மதிப்பீடு
+
+Learn Tamil Letters : தமிழ் எழுத்து கற்றல்
+
+Edutrack and MathHands : கணிதம் கற்றல்
+
+Remedial teaching through games : விளையாட்டுகள் மூலம் தீர்வு கற்பித்தல்
+
+Let's learn tamil letters : தமிழ் எழுத்துக்களை கற்போம்
+
+Tamil letter writing : தமிழ் எழுத்துக்கள் எழுதுதல்
+
+Tamil letter sounds : தமிழ் எழுத்து ஒலிகள்
+
+Tamil letter games : தமிழ் எழுத்து  விளையாட்டு
+
+Tamil vowel letter sounds : தமிழ் உயிர் எழுத்து ஒலிகள்
+
+Tamil consonant letter sounds: தமிழ் மெய் எழுத்து ஒலிகள்
+[5/5/2024 12:50 PM] Vithya Sangkavi: Listen sounds : ஒலிகளை கேட்கவும்
+[5/5/2024 12:50 PM] Vithya Sangkavi: Vowel letters : உயிர் எழுத்துக்கள்
+
+Consonant letters : மெய் எழுத்துக்கள்
+[5/5/2024 12:50 PM] Vithya Sangkavi: Play game : விளையாட்டு விளையாடு
+
+Let's play a game : ஒரு விளையாட்டு விளையாடலாம்
+[5/5/2024 12:50 PM] Vithya Sangkavi: Shuffle questions : அடுத்த கேள்விகள்
+
+Submit answers :  பதில்களை சமர்ப்பிக்கவும்
+[5/5/2024 12:50 PM] Vithya Sangkavi: Results : முடிவுகள்
+
+Total marks : மொத்த மதிப்பெண்கள்
+
+Wrong answers : தவறான பதில்கள்
+
+Question : கேள்வி
+
+Your Answer : உங்கள் பதில்
+
+Correct Answer : சரியான பதில்
+[5/5/2024 12:50 PM] Vithya Sangkavi: Results : முடிவுகள்
+
+Total marks : மொத்த மதிப்பெண்கள்
+
+Wrong answers : தவறான பதில்கள்
+
+Question : கேள்வி
+
+Your Answer : உங்கள் பதில்
+
+Correct Answer : சரியான பதில்
+
+OK : சரி

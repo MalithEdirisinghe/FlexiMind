@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Image, Text } from 'react-native';
+import { View, StyleSheet, Image, Text, TouchableOpacity, Alert } from 'react-native';
+import { getAuth, signOut } from 'firebase/auth';
+import { auth } from './firebase';
 
 const DashboardHome = ({ route, navigation }) => {
     const { language } = route.params;
@@ -11,7 +13,43 @@ const DashboardHome = ({ route, navigation }) => {
     }
 
     const handleLearn = () => {
-        navigation.navigate('Learn');
+        navigation.navigate('Learn',{ language: selectedLanguage });
+    }
+
+    const handleLogout = () => {
+        try {
+            signOut(auth)
+                .then(() => {
+                    navigation.navigate('Login');
+                })
+                .catch((error) => {
+                    console.error('Error logging out:', error);
+                });
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
+
+    const handleLogoutButtonPress = () => {
+        showLogoutAlert();
+    };
+
+    const showLogoutAlert = () => {
+        Alert.alert(
+            'Logout',
+            'Are you sure you want to logout?',
+            [
+                {
+                    text: 'No',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Yes',
+                    onPress: handleLogout,
+                },
+            ],
+            { cancelable: false }
+        );
     }
 
     return (
@@ -55,6 +93,10 @@ const DashboardHome = ({ route, navigation }) => {
                 <Text style={styles.remedial} onPress={handleDyslexia}>
                     {selectedLanguage === 'English' ? 'Remedial teaching \n through games' : 'விளையாட்டுகள் \n மூலம் தீர்வு கற்பித்தல்'}
                 </Text>
+
+                <TouchableOpacity style={styles.logoutBtn} onPress={handleLogoutButtonPress}>
+                    <Text style={styles.logoutTxt}>Logout</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -229,7 +271,24 @@ const englishStyles = StyleSheet.create({
             bottom: '8%',
             backgroundColor: '#FFFFFF',
             borderRadius: 9999,
-        },
+    },
+    logoutBtn: {
+        alignSelf: 'center',
+        top: '50%',
+        backgroundColor: 'red',
+        width: '30%',
+        height: '5%',
+        padding: 20,
+        borderRadius: 10
+    },
+    logoutTxt: {
+        color: '#ffff',
+        fontSize: 15,
+        height: 37.5,
+        textAlign: 'center',
+        fontWeight: '800',
+        bottom: 10
+    },
         overlay: {
             ...StyleSheet.absoluteFillObject,
             backgroundColor: 'rgba(255, 255, 255, 0.7)',
@@ -402,6 +461,23 @@ const tamilStyles = StyleSheet.create({
         bottom: '8%',
         backgroundColor: '#FFFFFF',
         borderRadius: 9999,
+    },
+    logoutBtn: {
+        alignSelf: 'center',
+        top: '50%',
+        backgroundColor: 'red',
+        width: '30%',
+        height: '5%',
+        padding: 20,
+        borderRadius: 10
+    },
+    logoutTxt: {
+        color: '#ffff',
+        fontSize: 15,
+        height: 37.5,
+        textAlign: 'center',
+        fontWeight: '800',
+        bottom: 10
     },
     overlay: {
         ...StyleSheet.absoluteFillObject,

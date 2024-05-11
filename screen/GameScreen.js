@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text, Image, TouchableOpacity, Alert } from "react-native";
 import { Picker } from '@react-native-picker/picker';
 
-const GameScreen = ({ navigation }) => {
+const GameScreen = ({ navigation, route }) => {
+
+    const { language } = route.params;
+
+    console.log('Language ', language);
+
     const [questions, setQuestions] = useState([
         { id: 1, text: "அ___மா", answer: "ம்", selectedAnswer: "" },
         { id: 2, text: "அப்___", answer: "பா", selectedAnswer: "" },
@@ -40,7 +45,7 @@ const GameScreen = ({ navigation }) => {
     }, [questions]);
 
     const handleHome = () => {
-        navigation.navigate('Home');
+        navigation.navigate('Home', { language: language });
     };
 
     const handleAnswerChange = (itemValue, index) => {
@@ -76,27 +81,37 @@ const GameScreen = ({ navigation }) => {
 
         setPoints(earnedPoints);
         setAnswersSubmitted(true);
-
-        Alert.alert(
-            'Results',
-            `Total Marks: ${earnedPoints}\n\n` +
-            (wrongAnswers.length > 0 ?
-                `Wrong Answers:\n${wrongAnswers.map(wrong => `Question: ${wrong.question}\nYour Answer: ${wrong.selectedAnswer}\nCorrect Answer: ${wrong.correctAnswer}`).join('\n\n')}` :
-                'All answers are correct!'),
-            [
-                { text: 'OK', onPress: () => console.log('OK Pressed') }
-            ],
-            { cancelable: false }
-        );
+        if(language === 'Tamil'){
+            Alert.alert(
+                'முடிவுகள்',
+                `மொத்த மதிப்பெண்கள்: ${earnedPoints}\n\n` +
+                (wrongAnswers.length > 0 ?
+                    `தவறான பதில்கள்:\n${wrongAnswers.map(wrong => `கேள்வி: ${wrong.question}\உங்கள் பதில்: ${wrong.selectedAnswer}\சரியான பதில்: ${wrong.correctAnswer}`).join('\n\n')}` :
+                    'All answers are correct!'),
+                [
+                    {
+                        text: 'சரி', onPress: () => navigation.navigate('Learn', { language: language }) }
+                ],
+                { cancelable: false }
+            );
+        }else{
+            Alert.alert(
+                'Results',
+                `Total Marks: ${earnedPoints}\n\n` +
+                (wrongAnswers.length > 0 ?
+                    `Wrong Answers:\n${wrongAnswers.map(wrong => `Question: ${wrong.question}\nYour Answer: ${wrong.selectedAnswer}\nCorrect Answer: ${wrong.correctAnswer}`).join('\n\n')}` :
+                    'All answers are correct!'),
+                [
+                    { text: 'OK', onPress: () => navigation.navigate('Learn', { language: language }) }
+                ],
+                { cancelable: false }
+            );
+        }
     };
-
-
-
-
 
     return (
         <View style={styles.container}>
-            <Text style={styles.textTopic}>LET’S PLAY A{'\n'} GAME</Text>
+            <Text style={styles.textTopic}>{language === 'Tamil' ? 'ஒரு விளையாட்டு \nவிளையாடலாம்' : 'LET"S PLAY A\n GAME'}</Text>
             <Image style={styles.bgImg} source={require('../assets/bg.jpg')}></Image>
             <View style={styles.overlay}></View>
             <Image style={styles.dashImg} source={require('../assets/game2.png')}></Image>

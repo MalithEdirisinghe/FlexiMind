@@ -1,23 +1,56 @@
 import React from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
 
-const LetterSoundScreen = ({ navigation }) => {
+const LetterSoundScreen = ({ navigation, route }) => {
+    const { language } = route.params;
 
     const handleHome = () => {
-        navigation.navigate('Home');
+        navigation.navigate('Home', { language: language });
     }
 
     const handleVowel = () => {
-        navigation.navigate('Vowel', { category: 'vowel' });
+        navigation.navigate('Vowel', { category: 'vowel', language: language });
     }
 
     const handleConsonant = () => {
-        navigation.navigate('Vowel', { category: 'consonant' });
+        navigation.navigate('Vowel', { category: 'consonant', language: language });
+    }
+
+    const renderWords = () => {
+        if (language === 'Tamil') {
+            return (
+                <>
+                    <Text style={styles.text2}>தமிழ் உயிர் எழுத்து ஒலிகள்</Text>
+                </>
+            );
+        } else {
+            return (
+                <>
+                    <Text style={styles.text1}>Tamil Vowel Letter Sounds</Text>
+                </>
+            );
+        }
+    }
+
+    const renderWords2 = () => {
+        if (language === 'Tamil') {
+            return (
+                <>
+                    <Text style={styles.text2}>தமிழ் மெய் எழுத்து ஒலிகள்</Text>
+                </>
+            );
+        } else {
+            return (
+                <>
+                    <Text style={styles.text1}>Tamil Consonant Letter Sounds</Text>
+                </>
+            );
+        }
     }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.textTopic}>TAMIL LETTER{'\n'} SOUNDS</Text>
+            <Text style={styles.textTopic}>{language === 'Tamil' ? 'தமிழ் எழுத்து ஒலிகள்' : 'TAMIL LETTER\n SOUNDS'}</Text>
             <Image style={styles.bgImg} source={require('../assets/bg.jpg')}></Image>
             <View style={styles.overlay}></View>
             <Image style={styles.dashImg} source={require('../assets/listen-table.png')}></Image>
@@ -28,7 +61,7 @@ const LetterSoundScreen = ({ navigation }) => {
 
             <View style={styles.rectangle1}>
                 <TouchableOpacity onPress={handleVowel}>
-                    <Text style={styles.text1}>Tamil Vowel{'\n'} Letter Sounds</Text>
+                    {renderWords()}
                 </TouchableOpacity>
             </View>
 
@@ -40,7 +73,7 @@ const LetterSoundScreen = ({ navigation }) => {
 
             <View style={styles.rectangle2}>
                 <TouchableOpacity onPress={handleConsonant}>
-                    <Text style={styles.text1}>Tamil Consonant{'\n'} Letter Sounds</Text>
+                    {renderWords2()}
                 </TouchableOpacity>
             </View>
 
@@ -154,6 +187,13 @@ const styles = StyleSheet.create({
         fontSize: 25,
         color: '#FFD166',
         top: '20%',
+    },
+    text2: {
+        textAlign: 'center',
+        fontWeight: '900',
+        fontSize: 20,
+        color: '#FFD166',
+        top: '35%',
     },
     line1: {
         position: 'absolute',
