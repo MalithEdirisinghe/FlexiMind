@@ -3,38 +3,38 @@ import { View, StyleSheet, Text, Image, TouchableOpacity, Alert } from "react-na
 import { Picker } from '@react-native-picker/picker';
 
 const GameScreen = ({ navigation, route }) => {
+    const { language, level } = route.params;
 
-    const { language } = route.params;
+    const normalizedLevel = level.toLowerCase();
 
-    console.log('Language ', language);
+    console.log('Normalized Level:', normalizedLevel);
 
-    const [questions, setQuestions] = useState([
-        { id: 1, text: "அ___மா", answer: "ம்", selectedAnswer: "" },
-        { id: 2, text: "அப்___", answer: "பா", selectedAnswer: "" },
-        { id: 3, text: "___க்கா", answer: "அ", selectedAnswer: "" },
-        { id: 4, text: "த___பி", answer: "ம்", selectedAnswer: "" },
+    const allQuestions = {
+        basic: [
+            { id: 1, text: "அ___மா", answer: "ம்", selectedAnswer: "" },
+            { id: 2, text: "அப்___", answer: "பா", selectedAnswer: "" },
+            { id: 3, text: "___க்கா", answer: "அ", selectedAnswer: "" },
+            { id: 4, text: "த___பி", answer: "ம்", selectedAnswer: "" }
+        ],
+        medium: [
+            { id: 5, text: "கப்___ல்", answer: "ப", selectedAnswer: "" },
+            { id: 6, text: "வ___ணம்", answer: "ண்", selectedAnswer: "" },
+            { id: 7, text: "சூரி___ன்", answer: "ய", selectedAnswer: "" },
+            { id: 8, text: "ப___ம்", answer: "ட்", selectedAnswer: "" }
+        ],
+        hard: [
+            { id: 9, text: "குடும்ப___", answer: "ம்", selectedAnswer: "" },
+            { id: 10, text: "___ந்திரன்", answer: "ச", selectedAnswer: "" },
+            { id: 11, text: "பகல___ன்", answer: "வ", selectedAnswer: "" },
+            { id: 12, text: "சக்க___ம்", answer: "ர", selectedAnswer: "" }
+        ]
+    };
 
-        { id: 5, text: "ம___ம்", answer: "ர", selectedAnswer: "" },
-        { id: 6, text: "ப___டம்", answer: "ட்", selectedAnswer: "" },
-        { id: 7, text: "கப்___ல்", answer: "ப", selectedAnswer: "" },
-        { id: 8, text: "பக___", answer: "ல்", selectedAnswer: "" },
+    const initialQuestions = allQuestions[normalizedLevel] || [];
 
-        { id: 9, text: "ப___ம்", answer: "ழ", selectedAnswer: "" },
-        { id: 10, text: "அ___ர்வு", answer: "தி", selectedAnswer: "" },
-        { id: 11, text: "ஏ___கம்", answer: "க்", selectedAnswer: "" },
-        { id: 12, text: "குடும்ப___", answer: "ம்", selectedAnswer: "" },
+    console.log('Initial questions:', initialQuestions);
 
-        { id: 13, text: "வ___ணம்", answer: "ண்", selectedAnswer: "" },
-        { id: 14, text: "___தவு", answer: "க", selectedAnswer: "" },
-        { id: 15, text: "சக்க___ம்", answer: "ர", selectedAnswer: "" },
-        { id: 16, text: "பகல___ன்", answer: "வ", selectedAnswer: "" },
-
-        { id: 17, text: "சூரி___ன்", answer: "ய", selectedAnswer: "" },
-        { id: 18, text: "___ந்திரன்", answer: "ச", selectedAnswer: "" },
-        { id: 19, text: "வர___பு", answer: "ம்", selectedAnswer: "" },
-        { id: 20, text: "க___ம்", answer: "ர", selectedAnswer: "" },
-    ]);
-
+    const [questions, setQuestions] = useState(initialQuestions);
     const [answersSubmitted, setAnswersSubmitted] = useState(false);
     const [points, setPoints] = useState(0);
     const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
@@ -54,16 +54,6 @@ const GameScreen = ({ navigation, route }) => {
         setQuestions(updatedQuestions);
     };
 
-    const shuffleQuestions = () => {
-        const unansweredQuestions = questions.filter(question => question.selectedAnswer === "");
-
-        const shuffledQuestions = [...unansweredQuestions].sort(() => Math.random());
-
-        const allQuestions = shuffledQuestions.concat(questions.filter(question => question.selectedAnswer !== ""));
-
-        setQuestions(allQuestions.slice(0, 20));
-    };
-
     const submitAnswers = () => {
         let earnedPoints = 0;
         const wrongAnswers = [];
@@ -81,82 +71,67 @@ const GameScreen = ({ navigation, route }) => {
 
         setPoints(earnedPoints);
         setAnswersSubmitted(true);
-        if(language === 'Tamil'){
-            Alert.alert(
-                'முடிவுகள்',
-                `மொத்த மதிப்பெண்கள்: ${earnedPoints}\n\n` +
-                (wrongAnswers.length > 0 ?
-                    `தவறான பதில்கள்:\n${wrongAnswers.map(wrong => `கேள்வி: ${wrong.question}\உங்கள் பதில்: ${wrong.selectedAnswer}\சரியான பதில்: ${wrong.correctAnswer}`).join('\n\n')}` :
-                    'All answers are correct!'),
-                [
-                    {
-                        text: 'சரி', onPress: () => navigation.navigate('Learn', { language: language }) }
-                ],
-                { cancelable: false }
-            );
-        }else{
-            Alert.alert(
-                'Results',
-                `Total Marks: ${earnedPoints}\n\n` +
-                (wrongAnswers.length > 0 ?
-                    `Wrong Answers:\n${wrongAnswers.map(wrong => `Question: ${wrong.question}\nYour Answer: ${wrong.selectedAnswer}\nCorrect Answer: ${wrong.correctAnswer}`).join('\n\n')}` :
-                    'All answers are correct!'),
-                [
-                    { text: 'OK', onPress: () => navigation.navigate('Learn', { language: language }) }
-                ],
-                { cancelable: false }
-            );
-        }
+
+        const alertTitle = language === 'Tamil' ? 'முடிவுகள்' : 'Results';
+        const alertMessage = language === 'Tamil' ?
+            `மொத்த மதிப்பெண்கள்: ${earnedPoints}\n\n` +
+            (wrongAnswers.length > 0 ?
+                `தவறான பதில்கள்:\n${wrongAnswers.map(wrong => `கேள்வி: ${wrong.question}\உங்கள் பதில்: ${wrong.selectedAnswer}\சரியான பதில்: ${wrong.correctAnswer}`).join('\n\n')}` :
+                'எல்லா பதில்களும் சரி!') :
+            `Total Marks: ${earnedPoints}\n\n` +
+            (wrongAnswers.length > 0 ?
+                `Wrong Answers:\n${wrongAnswers.map(wrong => `Question: ${wrong.question}\nYour Answer: ${wrong.selectedAnswer}\nCorrect Answer: ${wrong.correctAnswer}`).join('\n\n')}` :
+                'All answers are correct!');
+
+        Alert.alert(alertTitle, alertMessage, [
+            { text: language === 'Tamil' ? 'சரி' : 'OK', onPress: () => navigation.navigate('Learn', { language: language }) }
+        ], { cancelable: false });
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.textTopic}>{language === 'Tamil' ? 'ஒரு விளையாட்டு \nவிளையாடலாம்' : 'LET"S PLAY A\n GAME'}</Text>
+            <Text style={styles.textTopic}>{language === 'Tamil' ? 'ஒரு விளையாட்டு\nவிளையாடலாம்' : 'LET"S PLAY A\nGAME'}</Text>
             <Image style={styles.bgImg} source={require('../assets/bg.jpg')}></Image>
             <View style={styles.overlay}></View>
             <Image style={styles.dashImg} source={require('../assets/game2.png')}></Image>
 
-            {questions.slice(0, 4).map((question, index) => (
-                <View key={question.id} style={styles.questionContainer}>
-                    <Picker
-                        selectedValue={question.selectedAnswer}
-                        onValueChange={(itemValue) => handleAnswerChange(itemValue, index)}
-                        style={styles.picker}
-                        dropdownIconColor="#000"
-                    >
-                        <Picker.Item label="___" value="" />
-                        <Picker.Item label="ம்" value="ம்" />
-                        <Picker.Item label="க்" value="க்" />
-                        <Picker.Item label="ய" value="ய" />
-                        <Picker.Item label="பா" value="பா" />
-                        <Picker.Item label="ப" value="ப" />
-                        <Picker.Item label="க" value="க" />
-                        <Picker.Item label="அ" value="அ" />
-                        <Picker.Item label="ர" value="ர" />
-                        <Picker.Item label="ட்" value="ட்" />
-                        <Picker.Item label="ழ" value="ழ" />
-                        <Picker.Item label="தி" value="தி" />
-                        <Picker.Item label="ண்" value="ண்" />
-                        <Picker.Item label="வ" value="வ" />
-                        <Picker.Item label="ச" value="ச" />
-                        <Picker.Item label="ல்" value="ல்" />
-                    </Picker>
+            {questions.length === 0 ? (
+                <Text style={styles.noQuestionsText}>No questions available</Text>
+            ) : (
+                questions.map((question, index) => (
+                    <View key={question.id} style={styles.questionContainer}>
+                        <Picker
+                            selectedValue={question.selectedAnswer}
+                            onValueChange={(itemValue) => handleAnswerChange(itemValue, index)}
+                            style={styles.picker}
+                            dropdownIconColor="#000"
+                        >
+                            <Picker.Item label="___" value="" />
+                            <Picker.Item label="ம்" value="ம்" />
+                            <Picker.Item label="க்" value="க்" />
+                            <Picker.Item label="ய" value="ய" />
+                            <Picker.Item label="பா" value="பா" />
+                            <Picker.Item label="ப" value="ப" />
+                            <Picker.Item label="க" value="க" />
+                            <Picker.Item label="அ" value="அ" />
+                            <Picker.Item label="ர" value="ர" />
+                            <Picker.Item label="ட்" value="ட்" />
+                            <Picker.Item label="ழ" value="ழ" />
+                            <Picker.Item label="தி" value="தி" />
+                            <Picker.Item label="ண்" value="ண்" />
+                            <Picker.Item label="வ" value="வ" />
+                            <Picker.Item label="ச" value="ச" />
+                            <Picker.Item label="ல்" value="ல்" />
+                        </Picker>
 
-                    {question.selectedAnswer === "" ? (
-                        <Text style={styles.quest}>{question.text}</Text>
-                    ) : (
-                        <Text style={styles.quest}>{question.text.replace("___", question.selectedAnswer)}</Text>
-                    )}
-                </View>
-            ))}
-
-            <TouchableOpacity
-                style={[styles.shuffleButton, !answersSubmitted && !allQuestionsAnswered && styles.disabledButton]}
-                onPress={shuffleQuestions}
-                disabled={answersSubmitted || allQuestionsAnswered}
-            >
-                <Text style={styles.shuffleButtonText}>Shuffle Questions</Text>
-            </TouchableOpacity>
+                        {question.selectedAnswer === "" ? (
+                            <Text style={styles.quest}>{question.text}</Text>
+                        ) : (
+                            <Text style={styles.quest}>{question.text.replace("___", question.selectedAnswer)}</Text>
+                        )}
+                    </View>
+                ))
+            )}
 
             <TouchableOpacity
                 style={[styles.submitButton, allQuestionsAnswered && styles.enabledButton]}
@@ -174,7 +149,6 @@ const GameScreen = ({ navigation, route }) => {
         </View>
     );
 };
-
 
 const styles = StyleSheet.create({
     container: {
@@ -196,12 +170,6 @@ const styles = StyleSheet.create({
         top: '-83.5%',
         width: '70%',
         height: '25%',
-    },
-    textImg: {
-        alignSelf: 'center',
-        top: '-95%',
-        width: '90%',
-        height: '7%',
     },
     textTopic: {
         textAlign: 'center',
@@ -225,30 +193,14 @@ const styles = StyleSheet.create({
     },
     quest: {
         paddingTop: 5,
-        top: '-550%',
+        top: '-520%',
         textAlign: 'center',
         color: '#05056E',
         fontWeight: 'bold',
         fontSize: 50,
     },
     picker: {
-        bottom: 620,
-        left: '-10%',
-    },
-    picker1: {
-        bottom: '77%',
-        left: '-10%',
-    },
-    picker2: {
-        bottom: '75%',
-        left: '-10%',
-    },
-    picker3: {
-        bottom: '72%',
-        left: '-10%',
-    },
-    picker4: {
-        bottom: '70%',
+        bottom: 590,
         left: '-10%',
     },
     shuffleButton: {
@@ -267,8 +219,8 @@ const styles = StyleSheet.create({
         top: '15%'
     },
     submitButton: {
-        bottom: 635,
-        left: '55%',
+        bottom: '88%',
+        alignSelf: 'center',
         backgroundColor: '#4D86F7',
         borderRadius: 10,
         width: '35%',
@@ -290,6 +242,12 @@ const styles = StyleSheet.create({
         top: '28%',
         height: '80%',
         borderRadius: 85,
+    },
+    noQuestionsText: {
+        textAlign: 'center',
+        color: '#FF0000',
+        fontSize: 20,
+        marginTop: 20,
     }
 });
 

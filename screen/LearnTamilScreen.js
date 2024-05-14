@@ -1,11 +1,12 @@
-import React from "react";
-import { View, StyleSheet, Text, Image, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet, Text, Image, TouchableOpacity, Modal } from "react-native";
 
 const LearnTamilScreen = ({ navigation, route }) => {
     const { language } = route.params;
 
-    const selectedStyles = language === 'Tamil' ? stylesTamil : stylesEnglish;
+    const [modalVisible, setModalVisible] = useState(false);
 
+    const selectedStyles = language === 'Tamil' ? stylesTamil : stylesEnglish;
 
     const handleHome = () => {
         navigation.navigate('Home', { language: language });
@@ -16,22 +17,26 @@ const LearnTamilScreen = ({ navigation, route }) => {
     };
 
     const handleGame = () => {
-        navigation.navigate('Game', { language: language });
+        setModalVisible(true);
     };
 
     const handleWrite = () => {
         navigation.navigate('Writing', { language: language });
     };
 
+    const handleLevelSelect = (level) => {
+        setModalVisible(false);
+        navigation.navigate('Game', { language: language, level: level });
+    };
+
     return (
         <View style={selectedStyles.container}>
-            {/* Use the selected styles */}
             <Text style={selectedStyles.textTopic}>
                 {language === 'Tamil' ? 'தமிழ் எழுத்துக்களை கற்போம்' : 'LET’S LEARN\nTAMIL LETTERS'}
             </Text>
-            <Image style={selectedStyles.bgImg} source={require('../assets/bg.jpg')}></Image>
+            <Image style={selectedStyles.bgImg} source={require('../assets/bg.jpg')} />
             <View style={selectedStyles.overlay}></View>
-            <Image style={selectedStyles.dashImg} source={require('../assets/learn.png')}></Image>
+            <Image style={selectedStyles.dashImg} source={require('../assets/learn.png')} />
 
             <View style={selectedStyles.rectangle1}>
                 <TouchableOpacity onPress={handleWrite}>
@@ -65,6 +70,33 @@ const LearnTamilScreen = ({ navigation, route }) => {
                     <Image style={selectedStyles.homeIcon} source={require('../assets/homeIcon.png')} />
                 </TouchableOpacity>
             </View>
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={selectedStyles.modalContainer}>
+                    <View style={selectedStyles.modalView}>
+                        <Text style={selectedStyles.modalTitle}>{language === 'Tamil' ? 'விளையாட்டின் அளவைத் தேர்ந்தெடுக்கவும்' : 'Select Game Level'}</Text>
+                        <TouchableOpacity style={selectedStyles.modalButton} onPress={() => handleLevelSelect('Basic')}>
+                            <Text style={selectedStyles.modalButtonText}>{language === 'Tamil' ? 'அடிப்படை நிலை' : 'Basic Level'}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={selectedStyles.modalButton} onPress={() => handleLevelSelect('Medium')}>
+                            <Text style={selectedStyles.modalButtonText}>{language === 'Tamil' ? 'நடுத்தர நிலை' : 'Medium Level'}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={selectedStyles.modalButton} onPress={() => handleLevelSelect('Hard')}>
+                            <Text style={selectedStyles.modalButtonText}>{language === 'Tamil' ? 'கடினமான நிலை' : 'Hard Level'}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={selectedStyles.closeButton} onPress={() => setModalVisible(false)}>
+                            <Text style={selectedStyles.closeButtonText}>{language === 'Tamil' ? 'நெருக்கமான' : 'Close'}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -162,7 +194,50 @@ const stylesEnglish = StyleSheet.create({
         top: '28%',
         height: '80%',
         borderRadius: 85,
-    }
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalView: {
+        width: 300,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    modalTitle: {
+        fontSize: 20,
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    modalButton: {
+        backgroundColor: '#4D86F7',
+        borderRadius: 10,
+        padding: 10,
+        marginVertical: 5,
+        width: '100%',
+        alignItems: 'center',
+    },
+    modalButtonText: {
+        color: '#FFD166',
+        fontSize: 18,
+        fontWeight: '500'
+    },
+    closeButton: {
+        marginTop: 10,
+    },
+    closeButtonText: {
+        color: 'red',
+        fontSize: 18,
+    },
 });
 
 const stylesTamil = StyleSheet.create({
@@ -258,7 +333,49 @@ const stylesTamil = StyleSheet.create({
         top: '28%',
         height: '80%',
         borderRadius: 85,
-    }
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalView: {
+        width: 300,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    modalTitle: {
+        fontSize: 20,
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    modalButton: {
+        backgroundColor: '#4D86F7',
+        borderRadius: 10,
+        padding: 10,
+        marginVertical: 5,
+        width: '100%',
+        alignItems: 'center',
+    },
+    modalButtonText: {
+        color: 'white',
+        fontSize: 18,
+    },
+    closeButton: {
+        marginTop: 10,
+    },
+    closeButtonText: {
+        color: 'red',
+        fontSize: 18,
+    },
 });
 
 export default LearnTamilScreen;
