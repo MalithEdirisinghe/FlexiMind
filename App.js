@@ -38,14 +38,14 @@ const App = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Sound1"
-          component={LetterSoundScreen}
-          options={{ title: '', headerTintColor: '#FFD166', headerStyle: { backgroundColor: '#4D86F7' } }}
-        />
-        <Stack.Screen
           name="Writing"
           component={LetterWritingScreen}
-          options={{ title: '', headerTintColor: '#FFD166', headerStyle: { backgroundColor: '#4D86F7' } }}
+          options={{ title: 'Tamil Letter Writing', headerTitleAlign: 'center', headerTintColor: '#FFD166', headerStyle: { backgroundColor: '#4D86F7' } }}
+        />
+        <Stack.Screen
+          name="Sound1"
+          component={LetterSoundScreen}
+          options={{ title: 'Tamil Letter Sounds', headerTitleAlign: 'center', headerTintColor: '#FFD166', headerStyle: { backgroundColor: '#4D86F7' } }}
         />
         <Stack.Screen
           name="WritingLetter"

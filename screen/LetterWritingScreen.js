@@ -1,10 +1,11 @@
 import React from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
 
-const LetterWritingScreen = ({ navigation }) => {
+const LetterWritingScreen = ({ navigation, route }) => {
+    const { language } = route.params;
 
     const handleHome = () => {
-        navigation.navigate('Home');
+        navigation.navigate('Home', { language: language });
     }
 
     const handleVowel = () => {
@@ -17,7 +18,7 @@ const LetterWritingScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.textTopic}>TAMIL LETTER{'\n'} SOUNDS</Text>
+            <Text style={styles.textTopic}>TAMIL LETTER{'\n'} WRITING</Text>
             <Image style={styles.bgImg} source={require('../assets/bg.jpg')}></Image>
             <View style={styles.overlay}></View>
             <Image style={styles.dashImg} source={require('../assets/write2.png')}></Image>

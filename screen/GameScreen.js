@@ -11,22 +11,22 @@ const GameScreen = ({ navigation, route }) => {
 
     const allQuestions = {
         basic: [
-            { id: 1, text: "அ___மா", answer: "ம்", selectedAnswer: "" },
-            { id: 2, text: "அப்___", answer: "பா", selectedAnswer: "" },
-            { id: 3, text: "___க்கா", answer: "அ", selectedAnswer: "" },
-            { id: 4, text: "த___பி", answer: "ம்", selectedAnswer: "" }
+            { id: 1, text: "அ___மா", answer: "ம்", selectedAnswer: "", answerOptions: ["ம்", "க்", "அ", "பா"] },
+            { id: 2, text: "அப்___", answer: "பா", selectedAnswer: "", answerOptions: ["ம்", "க்", "அ", "பா"] },
+            { id: 3, text: "___க்கா", answer: "அ", selectedAnswer: "", answerOptions: ["ம்", "க்", "அ", "பா"] },
+            { id: 4, text: "த___பி", answer: "ம்", selectedAnswer: "", answerOptions: ["ம்", "க்", "அ", "பா"] }
         ],
         medium: [
-            { id: 5, text: "கப்___ல்", answer: "ப", selectedAnswer: "" },
-            { id: 6, text: "வ___ணம்", answer: "ண்", selectedAnswer: "" },
-            { id: 7, text: "சூரி___ன்", answer: "ய", selectedAnswer: "" },
-            { id: 8, text: "ப___ம்", answer: "ட்", selectedAnswer: "" }
+            { id: 5, text: "கப்___ல்", answer: "ப", selectedAnswer: "", answerOptions: ["ப", "ய", "ண்", "ட்"] },
+            { id: 6, text: "வ___ணம்", answer: "ண்", selectedAnswer: "", answerOptions: ["ப", "ய", "ண்", "ட்"] },
+            { id: 7, text: "சூரி___ன்", answer: "ய", selectedAnswer: "", answerOptions: ["ப", "ய", "ண்", "ட்"] },
+            { id: 8, text: "ப___ம்", answer: "ட்", selectedAnswer: "", answerOptions: ["ப", "ய", "ண்", "ட்"] }
         ],
         hard: [
-            { id: 9, text: "குடும்ப___", answer: "ம்", selectedAnswer: "" },
-            { id: 10, text: "___ந்திரன்", answer: "ச", selectedAnswer: "" },
-            { id: 11, text: "பகல___ன்", answer: "வ", selectedAnswer: "" },
-            { id: 12, text: "சக்க___ம்", answer: "ர", selectedAnswer: "" }
+            { id: 9, text: "குடும்ப___", answer: "ம்", selectedAnswer: "", answerOptions: ["ம்", "ர", "வ", "ச"] },
+            { id: 10, text: "___ந்திரன்", answer: "ச", selectedAnswer: "", answerOptions: ["ம்", "ர", "வ", "ச"] },
+            { id: 11, text: "பகல___ன்", answer: "வ", selectedAnswer: "", answerOptions: ["ம்", "ர", "வ", "ச"] },
+            { id: 12, text: "சக்க___ம்", answer: "ர", selectedAnswer: "", answerOptions: ["ம்", "ர", "வ", "ச"] }
         ]
     };
 
@@ -107,21 +107,9 @@ const GameScreen = ({ navigation, route }) => {
                             dropdownIconColor="#000"
                         >
                             <Picker.Item label="___" value="" />
-                            <Picker.Item label="ம்" value="ம்" />
-                            <Picker.Item label="க்" value="க்" />
-                            <Picker.Item label="ய" value="ய" />
-                            <Picker.Item label="பா" value="பா" />
-                            <Picker.Item label="ப" value="ப" />
-                            <Picker.Item label="க" value="க" />
-                            <Picker.Item label="அ" value="அ" />
-                            <Picker.Item label="ர" value="ர" />
-                            <Picker.Item label="ட்" value="ட்" />
-                            <Picker.Item label="ழ" value="ழ" />
-                            <Picker.Item label="தி" value="தி" />
-                            <Picker.Item label="ண்" value="ண்" />
-                            <Picker.Item label="வ" value="வ" />
-                            <Picker.Item label="ச" value="ச" />
-                            <Picker.Item label="ல்" value="ல்" />
+                            {question.answerOptions.map((option, optionIndex) => (
+                                <Picker.Item key={optionIndex} label={option} value={option} />
+                            ))}
                         </Picker>
 
                         {question.selectedAnswer === "" ? (
@@ -132,6 +120,7 @@ const GameScreen = ({ navigation, route }) => {
                     </View>
                 ))
             )}
+
 
             <TouchableOpacity
                 style={[styles.submitButton, allQuestionsAnswered && styles.enabledButton]}
@@ -219,7 +208,7 @@ const styles = StyleSheet.create({
         top: '15%'
     },
     submitButton: {
-        bottom: '88%',
+        bottom: '78%',
         alignSelf: 'center',
         backgroundColor: '#4D86F7',
         borderRadius: 10,
