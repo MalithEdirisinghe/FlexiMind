@@ -1,13 +1,62 @@
 import React, { useRef, useState } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, Vibration, ToastAndroid } from "react-native";
 import Signature from "react-native-signature-canvas";
 import * as FileSystem from 'expo-file-system';
 
+const translations = {
+    English: {
+        title: "TAMIL LETTER\n WRITE",
+        vowelTitle: "Vowel Letters",
+        consonantTitle: "Consonant Letters",
+        write: "Write",
+        clear: "Erase",
+        submit: "Submit",
+        skip: "Skip",
+        noSignature: "No Signature",
+        noSignatureMessage: "Please write a letter before submitting.",
+        errorTitle: "Error",
+        errorMessage: "Failed to send the signature.",
+        responseTitle: "Response",
+        incorrectAnswer: "Answer is Incorrect",
+        correctAnswer: "Your answer is Correct",
+        tryAgain: "Try Again",
+        next: "Next",
+        congratulations: "Congratulations",
+        allLettersCompleted: "You have completed all letters!",
+        unexpectedResponse: "Unexpected Response"
+    },
+    Tamil: {
+        title: "தமிழ் எழுத்து\n எழுத",
+        vowelTitle: "உயிர் எழுத்துகள்",
+        consonantTitle: "மெய் எழுத்துகள்",
+        write: "எழுதுக",
+        clear: "நீக்கு",
+        submit: "சமர்ப்பி",
+        skip: "தவிர்",
+        noSignature: "எழுத்து இல்லை",
+        noSignatureMessage: "சமர்ப்பிக்கும் முன் எழுத்து எழுதவும்.",
+        errorTitle: "பிழை",
+        errorMessage: "எழுத்து அனுப்புவதில் தோல்வி.",
+        responseTitle: "பதில்",
+        incorrectAnswer: "பதில் தவறாக உள்ளது",
+        correctAnswer: "உங்கள் பதில் சரியாக உள்ளது",
+        tryAgain: "மீண்டும் முயற்சிக்கவும்",
+        next: "அடுத்து",
+        congratulations: "வாழ்த்துக்கள்",
+        allLettersCompleted: "நீங்கள் எல்லா எழுத்துகளையும் முடித்துவிட்டீர்கள்!",
+        unexpectedResponse: "எதிர்பாராத பதில்"
+    }
+};
+
 const SoundVowelScreen = ({ route }) => {
-    const { category } = route.params;
+    const { category, language } = route.params;
     const ref = useRef();
     const [signature, setSignature] = useState(null);
     const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
+    const [toastShown, setToastShown] = useState(false);
+
+    const texts = translations[language] || translations.English;
+    console.log("Language", language);
 
     const vowelLetters = [
         'அ', 'ஆ', 'இ', 'ஈ', 'உ', 'ஊ',
@@ -44,6 +93,7 @@ const SoundVowelScreen = ({ route }) => {
     const handleClear = () => {
         ref.current.clearSignature();
         setSignature(null);
+        setToastShown(false);
         console.log('clear success!');
     };
 
@@ -84,23 +134,23 @@ const SoundVowelScreen = ({ route }) => {
                     console.log('letter: ', currentLetterIndex);
                     if (responseJson.defectiveness === "No defect found") {
                         Alert.alert(
-                            'Response',
-                            `Answer is Incorrect`,
+                            texts.responseTitle,
+                            texts.incorrectAnswer,
                             [
-                                { text: 'Try Again', onPress: handleClear }
+                                { text: texts.tryAgain, onPress: handleClear }
                             ]
                         );
                     } else if (responseJson.defectiveness === expectedResponses[currentLetterIndex]) {
                         Alert.alert(
-                            'Response',
-                            `Your answer is Correct`,
+                            texts.responseTitle,
+                            texts.correctAnswer,
                             [
                                 {
-                                    text: 'Next', onPress: () => {
+                                    text: texts.next, onPress: () => {
                                         if (currentLetterIndex < letters.length - 1) {
                                             setCurrentLetterIndex(currentLetterIndex + 1);
                                         } else {
-                                            Alert.alert('Congratulations', 'You have completed all letters!');
+                                            Alert.alert(texts.congratulations, texts.allLettersCompleted);
                                         }
                                         handleClear();
                                     }
@@ -109,24 +159,24 @@ const SoundVowelScreen = ({ route }) => {
                         );
                     } else {
                         Alert.alert(
-                            'Response',
-                            `Answer is Incorrect`,
+                            texts.responseTitle,
+                            texts.incorrectAnswer,
                             [
-                                { text: 'Try Again', onPress: handleClear }
+                                { text: texts.tryAgain, onPress: handleClear }
                             ]
                         );
                     }
                 } else {
                     console.log('response', response);
                     const responseText = await response.text();
-                    Alert.alert('Unexpected Response', responseText);
+                    Alert.alert(texts.unexpectedResponse, responseText);
                 }
             } catch (error) {
                 console.error('Error sending signature:', error);
-                Alert.alert('Error', 'Failed to send the signature.');
+                Alert.alert(texts.errorTitle, texts.errorMessage);
             }
         } else {
-            Alert.alert('No Signature', 'Please write a letter before submitting.');
+            Alert.alert(texts.noSignature, texts.noSignatureMessage);
         }
     };
 
@@ -134,40 +184,53 @@ const SoundVowelScreen = ({ route }) => {
         if (currentLetterIndex < letters.length - 1) {
             setCurrentLetterIndex(currentLetterIndex + 1);
         } else {
-            Alert.alert('Congratulations', 'You have completed all letters!');
+            Alert.alert(texts.congratulations, texts.allLettersCompleted);
         }
         handleClear();
     };
 
+    const handleDrawingOutside = () => {
+        Vibration.vibrate(500);
+        if (!toastShown) {
+            ToastAndroid.showWithGravityAndOffset(
+                "Out of area",
+                ToastAndroid.SHORT,
+                ToastAndroid.BOTTOM,
+                25,
+                50
+            );
+            setToastShown(true);
+        }
+    };
+
+    const handleTouch = (event) => {
+        const { locationX, locationY } = event.nativeEvent;
+        const { height, width } = styles.signatureContainer;
+
+        if (locationX <= 0 || locationY <= 0 || locationX > width || locationY > height) {
+            handleDrawingOutside();
+        }
+    };
+
     return (
         <View style={styles.container}>
-            <Text style={styles.textTopic}>TAMIL LETTER{'\n'} WRITE</Text>
+            <Text style={styles.textTopic}>{texts.title}</Text>
             {category === 'vowel' ? (
                 <>
-                    <Text style={styles.vowelText}>Vowel Letters</Text>
+                    <Text style={styles.vowelText}>{texts.vowelTitle}</Text>
                 </>
             ) : category === 'consonant' ? (
                 <>
-                    <Text style={styles.vowelText}>Consonant Letters</Text>
+                    <Text style={styles.vowelText}>{texts.consonantTitle}</Text>
                 </>
             ) : null}
 
             <Image style={styles.dashImg} source={require('../assets/write.png')} />
 
             <View style={styles.overlay}>
-                {category === 'vowel' && (
-                    <>
-                        <Text style={styles.card1Text}><Text style={{ color: "#4D86F7", fontSize: 45, fontWeight: '600' }}>Write</Text> {letters[currentLetterIndex]}</Text>
-                    </>
-                )}
+                <Text style={styles.card1Text}><Text style={{ color: "#4D86F7", fontSize: 45, fontWeight: '600' }}>{texts.write}</Text> {letters[currentLetterIndex]}</Text>
 
-                {category === 'consonant' && (
-                    <>
-                        <Text style={styles.card1Text}><Text style={{ color: "#4D86F7", fontSize: 45, fontWeight: '600' }}>Write</Text> {letters[currentLetterIndex]}</Text>
-                    </>
-                )}
-
-                <View style={styles.signatureContainer}>
+                <View style={styles.signatureContainer} onTouchMove={handleTouch}>
                     <Signature
                         ref={ref}
                         onOK={handleSignature}
@@ -187,15 +250,15 @@ const SoundVowelScreen = ({ route }) => {
                 </View>
 
                 <TouchableOpacity onPress={handleClear} style={styles.eraseButton}>
-                    <Text style={styles.eraseButtonText}>Erase</Text>
+                    <Text style={styles.eraseButtonText}>{texts.clear}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
-                    <Text style={styles.saveButtonText}>Submit</Text>
+                    <Text style={styles.saveButtonText}>{texts.submit}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
-                    <Text style={styles.skipButtonText}>Skip</Text>
+                    <Text style={styles.skipButtonText}>{texts.skip}</Text>
                 </TouchableOpacity>
             </View>
         </View>

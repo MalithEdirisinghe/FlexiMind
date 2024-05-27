@@ -1,51 +1,71 @@
 import React from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
 
+const translations = {
+    English: {
+        title: "TAMIL LETTER\n WRITING",
+        vowel: "Tamil Vowel\n Letter Write",
+        consonant: "Tamil Consonant\n Letter Write",
+        home: "Home",
+        number1: "1",
+        number2: "2",
+    },
+    Tamil: {
+        title: "தமிழ் எழுத்து\n எழுதுதல்",
+        vowel: "தமிழ் உயிர்\n எழுத்து எழுதுதல்",
+        consonant: "தமிழ் மெய்\n எழுத்து எழுதுதல்",
+        home: "முகப்பு",
+        number1: "1",
+        number2: "2",
+    }
+};
+
 const LetterWritingScreen = ({ navigation, route }) => {
     const { language } = route.params;
+    const texts = translations[language] || translations.English;
 
     const handleHome = () => {
         navigation.navigate('Home', { language: language });
-    }
+    };
 
     const handleVowel = () => {
-        navigation.navigate('WritingLetter', { category: 'vowel' });
-    }
+        navigation.navigate('WritingLetter', { category: 'vowel', language: language });
+    };
 
     const handleConsonant = () => {
-        navigation.navigate('WritingLetter', { category: 'consonant' });
-    }
+        navigation.navigate('WritingLetter', { category: 'consonant', language: language });
+    };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.textTopic}>TAMIL LETTER{'\n'} WRITING</Text>
-            <Image style={styles.bgImg} source={require('../assets/bg.jpg')}></Image>
-            <View style={styles.overlay}></View>
-            <Image style={styles.dashImg} source={require('../assets/write2.png')}></Image>
+            <Text style={styles.textTopic}>{texts.title}</Text>
+            <Image style={styles.bgImg} source={require('../assets/bg.jpg')} />
+            <View style={styles.overlay} />
+            <Image style={styles.dashImg} source={require('../assets/write2.png')} />
 
             <View style={styles.ellipse}>
-                <Text style={styles.text}>1</Text>
+                <Text style={styles.text}>{texts.number1}</Text>
             </View>
 
             <View style={styles.rectangle1}>
                 <TouchableOpacity onPress={handleVowel}>
-                    <Text style={styles.text1}>Tamil Vowel{'\n'} Letter Write</Text>
+                    <Text style={styles.text1}>{texts.vowel}</Text>
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.line1}></View>
+            <View style={styles.line1} />
 
             <View style={styles.ellipse2}>
-                <Text style={styles.text}>2</Text>
+                <Text style={styles.text}>{texts.number2}</Text>
             </View>
 
             <View style={styles.rectangle2}>
                 <TouchableOpacity onPress={handleConsonant}>
-                    <Text style={styles.text1}>Tamil Consonant{'\n'} Letter Write</Text>
+                    <Text style={styles.text1}>{texts.consonant}</Text>
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.line2}></View>
+            <View style={styles.line2} />
 
             <View style={styles.bottomNavigate}>
                 <TouchableOpacity onPress={handleHome}>
@@ -90,7 +110,6 @@ const styles = StyleSheet.create({
         color: '#FFD166',
         top: '0%'
     },
-
     bottomNavigate: {
         position: 'absolute',
         width: '100%',
@@ -98,7 +117,6 @@ const styles = StyleSheet.create({
         top: '94.5%',
         backgroundColor: '#4D86F7',
     },
-
     homeIcon: {
         alignSelf: 'center',
         height: 28,
@@ -154,7 +172,6 @@ const styles = StyleSheet.create({
         fontWeight: '900',
         fontSize: 25,
         color: '#FFD166',
-        top: '20%',
     },
     line1: {
         position: 'absolute',
