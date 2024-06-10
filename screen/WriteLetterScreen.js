@@ -1,7 +1,9 @@
 import React, { useRef, useState } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, Vibration, ToastAndroid } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, Vibration, ToastAndroid, Modal } from "react-native";
+import { Video } from 'expo-av';
 import Signature from "react-native-signature-canvas";
 import * as FileSystem from 'expo-file-system';
+import { Entypo } from '@expo/vector-icons';
 
 const translations = {
     English: {
@@ -23,7 +25,8 @@ const translations = {
         next: "Next",
         congratulations: "Congratulations",
         allLettersCompleted: "You have completed all letters!",
-        unexpectedResponse: "Unexpected Response"
+        unexpectedResponse: "Unexpected Response",
+        instruction: "Instruction"
     },
     Tamil: {
         title: "தமிழ் எழுத்து\n எழுத",
@@ -44,8 +47,42 @@ const translations = {
         next: "அடுத்து",
         congratulations: "வாழ்த்துக்கள்",
         allLettersCompleted: "நீங்கள் எல்லா எழுத்துகளையும் முடித்துவிட்டீர்கள்!",
-        unexpectedResponse: "எதிர்பாராத பதில்"
+        unexpectedResponse: "எதிர்பாராத பதில்",
+        instruction: "அறிவுறுத்தல்கள்"
     }
+};
+
+const videoMapping = {
+    'அ': require('../assets/Letter writing videos/Vowel letters/a.mp4'),
+    'ஆ': require('../assets/Letter writing videos/Vowel letters/aa.mp4'),
+    'இ': require('../assets/Letter writing videos/Vowel letters/e.mp4'),
+    'ஈ': require('../assets/Letter writing videos/Vowel letters/ee.mp4'),
+    'உ': require('../assets/Letter writing videos/Vowel letters/u.mp4'),
+    'ஊ': require('../assets/Letter writing videos/Vowel letters/uu.mp4'),
+    'எ': require('../assets/Letter writing videos/Vowel letters/ae.mp4'),
+    'ஏ': require('../assets/Letter writing videos/Vowel letters/aee.mp4'),
+    'ஐ': require('../assets/Letter writing videos/Vowel letters/i.mp4'),
+    'ஒ': require('../assets/Letter writing videos/Vowel letters/o.mp4'),
+    'ஓ': require('../assets/Letter writing videos/Vowel letters/oo.mp4'),
+    'ஔ': require('../assets/Letter writing videos/Vowel letters/ou.mp4'),
+    'க்': require('../assets/Letter writing videos/Consonant letters/k.mp4'),
+    'ங்': require('../assets/Letter writing videos/Consonant letters/ng.mp4'),
+    'ச்': require('../assets/Letter writing videos/Consonant letters/ch.mp4'),
+    'ஞ்': require('../assets/Letter writing videos/Consonant letters/nj.mp4'),
+    'ட்': require('../assets/Letter writing videos/Consonant letters/t.mp4'),
+    'ண்': require('../assets/Letter writing videos/Consonant letters/nn.mp4'),
+    'த்': require('../assets/Letter writing videos/Consonant letters/th.mp4'),
+    'ந்': require('../assets/Letter writing videos/Consonant letters/ndh.mp4'),
+    'ப்': require('../assets/Letter writing videos/Consonant letters/p.mp4'),
+    'ம்': require('../assets/Letter writing videos/Consonant letters/m.mp4'),
+    'ய்': require('../assets/Letter writing videos/Consonant letters/yi.mp4'),
+    'ர்': require('../assets/Letter writing videos/Consonant letters/r.mp4'),
+    'ல்': require('../assets/Letter writing videos/Consonant letters/l.mp4'),
+    'வ்': require('../assets/Letter writing videos/Consonant letters/v.mp4'),
+    'ழ்': require('../assets/Letter writing videos/Consonant letters/lll.mp4'),
+    'ள்': require('../assets/Letter writing videos/Consonant letters/ll.mp4'),
+    'ற்': require('../assets/Letter writing videos/Consonant letters/tr.mp4'),
+    'ன்': require('../assets/Letter writing videos/Consonant letters/n.mp4'),
 };
 
 const SoundVowelScreen = ({ route }) => {
@@ -54,6 +91,9 @@ const SoundVowelScreen = ({ route }) => {
     const [signature, setSignature] = useState(null);
     const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
     const [toastShown, setToastShown] = useState(false);
+    const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const videoRef = useRef(null);
 
     const texts = translations[language] || translations.English;
     console.log("Language", language);
@@ -212,6 +252,16 @@ const SoundVowelScreen = ({ route }) => {
         }
     };
 
+    const handlePlayPause = () => {
+        setIsModalVisible(true);
+        setIsVideoPlaying(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalVisible(false);
+        setIsVideoPlaying(false);
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.textTopic}>{texts.title}</Text>
@@ -229,6 +279,35 @@ const SoundVowelScreen = ({ route }) => {
 
             <View style={styles.overlay}>
                 <Text style={styles.card1Text}><Text style={{ color: "#4D86F7", fontSize: 45, fontWeight: '600' }}>{texts.write}</Text> {letters[currentLetterIndex]}</Text>
+
+                <TouchableOpacity onPress={handlePlayPause} style={styles.playButton}>
+                    <Text style={styles.playButtonText}>{texts.instruction}</Text>
+                    <Entypo name="controller-play" size={24} color="black" />
+                </TouchableOpacity>
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={isModalVisible}
+                    onRequestClose={handleCloseModal}
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <TouchableOpacity onPress={handleCloseModal} style={styles.closeButton}>
+                                <Text style={styles.closeButtonText}>Close</Text>
+                            </TouchableOpacity>
+                            <Video
+                                ref={videoRef}
+                                source={videoMapping[letters[currentLetterIndex]]}
+                                style={styles.video}
+                                resizeMode="contain"
+                                useNativeControls={true}
+                                isLooping
+                                shouldPlay={isVideoPlaying}
+                            />
+                        </View>
+                    </View>
+                </Modal>
 
                 <View style={styles.signatureContainer} onTouchMove={handleTouch}>
                     <Signature
@@ -360,6 +439,49 @@ const styles = StyleSheet.create({
         bottom: '7%'
     },
     skipButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    playButton: {
+        padding: 10,
+        backgroundColor: '#007BFF',
+        borderRadius: 10,
+        alignItems: 'center',
+        alignSelf: 'center',
+    },
+    playButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    video: {
+        alignSelf: 'center',
+        width: 320,
+        height: 180,
+        marginTop: 20,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    },
+    modalContent: {
+        width: '90%',
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 20,
+        alignItems: 'center',
+    },
+    closeButton: {
+        alignSelf: 'flex-end',
+        padding: 10,
+        backgroundColor: '#FF5A5F',
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    closeButtonText: {
         color: '#fff',
         fontSize: 16,
         fontWeight: '600',
