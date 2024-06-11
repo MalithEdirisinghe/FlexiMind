@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, Vibration, ToastAndroid, Modal } from "react-native";
-import { Video } from 'expo-av';
+import { Audio, Video } from 'expo-av';
 import Signature from "react-native-signature-canvas";
 import * as FileSystem from 'expo-file-system';
 import { Entypo } from '@expo/vector-icons';
@@ -85,6 +85,8 @@ const videoMapping = {
     'ன்': require('../assets/Letter writing videos/Consonant letters/n.mp4'),
 };
 
+const beepSound = require('../assets/beep.mp3'); // Ensure you have a beep sound in the correct path
+
 const SoundVowelScreen = ({ route }) => {
     const { category, language } = route.params;
     const ref = useRef();
@@ -93,6 +95,7 @@ const SoundVowelScreen = ({ route }) => {
     const [toastShown, setToastShown] = useState(false);
     const [isVideoPlaying, setIsVideoPlaying] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [sound, setSound] = useState(null);
     const videoRef = useRef(null);
 
     const texts = translations[language] || translations.English;
@@ -229,7 +232,7 @@ const SoundVowelScreen = ({ route }) => {
         handleClear();
     };
 
-    const handleDrawingOutside = () => {
+    const handleDrawingOutside = async () => {
         Vibration.vibrate(500);
         if (!toastShown) {
             ToastAndroid.showWithGravityAndOffset(
@@ -241,6 +244,10 @@ const SoundVowelScreen = ({ route }) => {
             );
             setToastShown(true);
         }
+
+        const { sound } = await Audio.Sound.createAsync(beepSound);
+        setSound(sound);
+        await sound.playAsync();
     };
 
     const handleTouch = (event) => {
@@ -261,6 +268,14 @@ const SoundVowelScreen = ({ route }) => {
         setIsModalVisible(false);
         setIsVideoPlaying(false);
     };
+
+    React.useEffect(() => {
+        return sound
+            ? () => {
+                sound.unloadAsync();
+            }
+            : undefined;
+    }, [sound]);
 
     return (
         <View style={styles.container}>
