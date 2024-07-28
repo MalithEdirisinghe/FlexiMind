@@ -10,8 +10,10 @@ const SelectWordGameScreen = ({ navigation, route }) => {
 
     const questions = [
         { prompt: 'ல் / ப / க', options: ['பகல்', 'இவபா', 'கபல்'], answer: 'பகல்' },
-        { prompt: 'ர / ச / ட', options: ['ரதம்', 'சபா', 'கட்ட'], answer: 'ரதம்' },
-        { prompt: 'த / ந / ச', options: ['பூசம்', 'நபா', 'சமயம்'], answer: 'சமயம்' },
+        { prompt: 'ணி / அ / ல்', options: ['ணிஅல்', 'அணில்', 'அல்ணி'], answer: 'அணில்' },
+        { prompt: 'நி / ம் / ற', options: ['ம்நிற', 'நிறம்', 'றநிம்'], answer: 'நிறம்' },
+        { prompt: 'ட / ட் / ம் / வ', options: ['வட்டம்', 'டட்வம்', 'டம்வம்'], answer: 'வட்டம்' },
+        { prompt: 'வு / றி / மு', options: ['வுறிமு', 'றிமுவு', 'முறிவு'], answer: 'முறிவு' },
     ];
 
     const handleWordPress = (word) => {
@@ -40,6 +42,9 @@ const SelectWordGameScreen = ({ navigation, route }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.headerText}>Select the Correct{'\n'}Word</Text>
+            <Image style={styles.bgImg} source={require('../assets/bg.jpg')}></Image>
+            <View style={styles.overlay}></View>
+            <Image style={styles.dashImg} source={require('../assets/game2.png')}></Image>
             <Text style={styles.promptText}>{questions[currentIndex].prompt}</Text>
             <View style={styles.optionsContainer}>
                 {questions[currentIndex].options.map((option, index) => (
@@ -59,9 +64,6 @@ const SelectWordGameScreen = ({ navigation, route }) => {
             </View>
             <TouchableOpacity style={styles.nextButton} onPress={handleNextPress}>
                 <Text style={styles.nextButtonText}>Next</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.homeButton} onPress={handleHomePress}>
-                <Image style={styles.homeIcon} source={require('../assets/homeIcon.png')} />
             </TouchableOpacity>
             <Modal
                 visible={showCompletionModal}
@@ -94,17 +96,40 @@ const styles = StyleSheet.create({
         fontWeight: '900',
         fontSize: 30,
         color: '#FFD166',
-        top: '5%',
+        top: '35%',
+    },
+    bgImg: {
+        alignSelf: 'center',
+        top: '50.4%',
+        width: '100%',
+        height: '80%',
+        borderWidth: 1,
+        borderRadius: 90,
+    },
+    dashImg: {
+        alignSelf: 'center',
+        bottom: '50%',
+        width: '60%',
+        height: '18%',
+        top: '-45%',
+    },
+    overlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        top: '28%',
+        height: '80%',
+        borderRadius: 85,
     },
     promptText: {
         textAlign: 'center',
         fontWeight: 'bold',
-        fontSize: 25,
-        color: '#2d2d2d',
-        marginTop: 20,
+        fontSize: 30,
+        color: '#05056E',
+        bottom: '40%'
     },
     optionsContainer: {
         marginTop: 50,
+        bottom: '40%'
     },
     optionButton: {
         backgroundColor: '#FFD166',
@@ -124,19 +149,12 @@ const styles = StyleSheet.create({
         padding: 15,
         marginTop: 20,
         borderRadius: 10,
+        bottom: '40%'
     },
     nextButtonText: {
         fontSize: 20,
         color: '#FFD166',
         fontWeight: 'bold',
-    },
-    homeButton: {
-        position: 'absolute',
-        bottom: 20,
-    },
-    homeIcon: {
-        width: 50,
-        height: 50,
     },
     modalContainer: {
         flex: 1,
