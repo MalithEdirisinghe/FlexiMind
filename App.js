@@ -10,6 +10,10 @@ import SoundVowelScreen from './screen/SoundVowelScreen';
 import GameScreen from './screen/GameScreen';
 import LetterWritingScreen from './screen/LetterWritingScreen';
 import WriteLetterScreen from './screen/WriteLetterScreen';
+import FirstLetterGame from './screen/FirstLatterGame';
+import GameSelect from './screen/GameSelect';
+import MatchingLettersGameScreen from './screen/MatchingLettersGameScreen';
+import SelectWordGameScreen from './screen/SelectWordGameScreen';
 
 const Stack = createStackNavigator();
 
@@ -38,6 +42,11 @@ const App = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="GameSelect"
+          component={GameSelect}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="Writing"
           component={LetterWritingScreen}
           options={{ title: 'Tamil Letter Writing', headerTitleAlign: 'center', headerTintColor: '#FFD166', headerStyle: { backgroundColor: '#4D86F7' } }}
@@ -61,6 +70,21 @@ const App = () => {
           name="Game"
           component={GameScreen}
           options={{ title: 'PLAY GAME',headerTitleAlign: 'center', headerTintColor: '#FFD166', headerStyle: { backgroundColor: '#4D86F7' } }}
+        />
+        <Stack.Screen
+          name="FirstLetterGame"
+          component={FirstLetterGame}
+          options={{ title: 'PLAY GAME', headerTitleAlign: 'center', headerTintColor: '#FFD166', headerStyle: { backgroundColor: '#4D86F7' } }}
+        />
+        <Stack.Screen
+          name="MatchingLettersGameScreen"
+          component={MatchingLettersGameScreen}
+          options={{ title: 'PLAY GAME', headerTitleAlign: 'center', headerTintColor: '#FFD166', headerStyle: { backgroundColor: '#4D86F7' } }}
+        />
+        <Stack.Screen
+          name="SelectWordGameScreen"
+          component={SelectWordGameScreen}
+          options={{ title: 'PLAY GAME', headerTitleAlign: 'center', headerTintColor: '#FFD166', headerStyle: { backgroundColor: '#4D86F7' } }}
         />
       </Stack.Navigator>
     </NavigationContainer>
